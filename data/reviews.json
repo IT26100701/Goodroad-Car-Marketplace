@@ -1,0 +1,12 @@
+[
+  {
+    "id": "r1000000-0000-4000-8000-000000000001",
+    "buyerId": "b1000000-0000-4000-8000-000000000001",
+    "carId": "c1000000-0000-4000-8000-000000000007",
+    "rating": 5,
+    "comment": "Excellent seller. Car was exactly as described. Smooth transaction and quick handover.",
+    "status": "PUBLISHED",
+    "createdAt": "2026-10-11T10:00:00.000Z",
+    "updatedAt": "2026-10-11T10:00:00.000Z"
+  }
+]

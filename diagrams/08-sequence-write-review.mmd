@@ -1,0 +1,40 @@
+%%{init: {'theme': 'base'}}%%
+sequenceDiagram
+    autonumber
+    actor Buyer
+    participant UI as Web UI
+    participant ReviewCtrl as ReviewController
+    participant ReviewSvc as ReviewService
+    participant OrderSvc as OrderService
+    participant ReviewRepo as ReviewRepository
+    participant Store as JsonFileStore
+    participant Audit as AuditService
+
+    Buyer->>UI: Submit rating + comment for a car
+    UI->>ReviewCtrl: POST /api/cars/{carId}/reviews {rating, comment}
+    ReviewCtrl->>ReviewSvc: createReview(buyerId, carId, rating, comment)
+
+    ReviewSvc->>OrderSvc: hasCompletedOrder(buyerId, carId)
+    OrderSvc-->>ReviewSvc: true / false
+
+    alt Buyer has a COMPLETED order for this car
+        ReviewSvc->>ReviewRepo: findExisting(buyerId, carId)
+        ReviewRepo-->>ReviewSvc: none (or existing)
+        alt No existing review
+            ReviewSvc->>ReviewRepo: save(new Review)
+            ReviewRepo->>Store: write reviews.json
+            Store-->>ReviewRepo: ok
+            ReviewSvc->>Audit: log("REVIEW_CREATED", ...)
+            ReviewSvc-->>ReviewCtrl: Review (PUBLISHED)
+            ReviewCtrl-->>UI: 201 Created
+            UI-->>Buyer: "Review published"
+        else Already reviewed
+            ReviewSvc-->>ReviewCtrl: conflict
+            ReviewCtrl-->>UI: 409
+            UI-->>Buyer: "You already reviewed this car"
+        end
+    else No completed purchase
+        ReviewSvc-->>ReviewCtrl: forbidden
+        ReviewCtrl-->>UI: 403
+        UI-->>Buyer: "Complete a purchase first"
+    end
