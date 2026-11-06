@@ -1,0 +1,783 @@
+/* =====================================================================
+   Goodroad — polished "next-gen" skin
+   Loaded AFTER app.css. Everything here is an override layer.
+
+   1. Theme tokens      (light = default, dark = [data-theme="dark"])
+   2. Ambient layers    (aurora, grid, scroll progress)
+   3. Glass surfaces    (header, panels, cards)
+   4. Hero              (animated headline, orbit, driving car)
+   5. Controls          (buttons, inputs, theme toggle)
+   6. Motion utilities  (reveal, ripple, toast, view transition)
+   ===================================================================== */
+
+/* ---------- 1. Theme tokens ---------- */
+:root {
+  --pine-2: 172 42% 36%;
+  --hl: 0 0% 100% / .55;
+  --aurora-a: 164 58% 58%;
+  --aurora-b: 14 88% 72%;
+  --aurora-c: 39 94% 70%;
+  --aurora-op: .32;
+  --grid-op: .04;
+  --accent-grad: linear-gradient(120deg, hsl(var(--pine)), hsl(var(--coral)));
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --radius-card: 18px;
+  --radius-lg: 22px;
+  --shadow-soft: 0 20px 50px hsl(var(--shadow) / .07);
+  --shadow-lift: 0 28px 60px hsl(var(--shadow) / .12);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: 195 28% 6%;
+  --paper-deep: 192 22% 10%;
+  --surface: 192 24% 9%;
+  --ink: 40 22% 94%;
+  --muted: 185 10% 64%;
+  --line: 190 14% 18%;
+  --pine: 162 58% 52%;
+  --pine-2: 172 62% 44%;
+  --pine-dark: 162 70% 68%;
+  --coral: 12 86% 64%;
+  --coral-soft: 12 42% 16%;
+  --gold: 39 90% 64%;
+  --success: 152 55% 55%;
+  --danger: 4 82% 66%;
+  --shadow: 0 0% 0%;
+  --hl: 0 0% 100% / .08;
+  --aurora-a: 162 70% 32%;
+  --aurora-b: 10 78% 42%;
+  --aurora-c: 255 55% 42%;
+  --aurora-op: .28;
+  --grid-op: .055;
+}
+
+/* Dark-mode specific fixes for hard-coded light colours */
+:root[data-theme="dark"] .tag-warm,
+:root[data-theme="dark"] .notice-warm {
+  color: hsl(12 90% 75%);
+}
+:root[data-theme="dark"] .status-pending,
+:root[data-theme="dark"] .status-approved {
+  color: hsl(39 92% 72%);
+  background: hsl(39 80% 50% / .14);
+}
+:root[data-theme="dark"] .detail-art,
+:root[data-theme="dark"] .gallery-main {
+  background: hsl(var(--paper-deep));
+}
+:root[data-theme="dark"] .car-visual,
+:root[data-theme="dark"] .detail-art {
+  background: color-mix(in oklab, hsl(var(--art-bg, 161 22% 87%)) 14%, hsl(var(--surface)));
+}
+:root[data-theme="dark"] body::before {
+  opacity: .04;
+  mix-blend-mode: screen;
+}
+:root[data-theme="dark"] .stars {
+  color: hsl(var(--gold));
+}
+:root[data-theme="dark"] .rating-control button.selected,
+:root[data-theme="dark"] .rating-control button:hover {
+  color: hsl(var(--gold));
+}
+
+html {
+  scrollbar-color: hsl(var(--pine) / .45) transparent;
+  scrollbar-width: thin;
+}
+body {
+  background: transparent; /* lets the aurora layer show through */
+}
+.theme-anim,
+.theme-anim *,
+.theme-anim *::before,
+.theme-anim *::after {
+  transition:
+    background-color .42s ease,
+    color .42s ease,
+    border-color .42s ease,
+    fill .42s ease,
+    box-shadow .42s ease !important;
+}
+
+/* ---------- 2. Ambient layers ---------- */
+.fx-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fx-bg i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: var(--aurora-op);
+  will-change: transform;
+}
+.fx-bg i:nth-child(1) {
+  width: 52vw;
+  height: 52vw;
+  left: -14vw;
+  top: -18vw;
+  background: hsl(var(--aurora-a));
+  animation: drift-a 30s ease-in-out infinite alternate;
+}
+.fx-bg i:nth-child(2) {
+  width: 42vw;
+  height: 42vw;
+  right: -12vw;
+  top: 4vh;
+  background: hsl(var(--aurora-b));
+  animation: drift-b 36s ease-in-out infinite alternate;
+}
+.fx-bg i:nth-child(3) {
+  width: 38vw;
+  height: 38vw;
+  left: 26vw;
+  bottom: -20vw;
+  background: hsl(var(--aurora-c));
+  animation: drift-c 42s ease-in-out infinite alternate;
+}
+.fx-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(hsl(var(--ink) / var(--grid-op)) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--ink) / var(--grid-op)) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 85% 55% at 50% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(ellipse 85% 55% at 50% 0%, #000 0%, transparent 72%);
+}
+@keyframes drift-a {
+  to {
+    transform: translate3d(12vw, 9vh, 0) scale(1.12);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-10vw, 12vh, 0) scale(.92);
+  }
+}
+@keyframes drift-c {
+  to {
+    transform: translate3d(-14vw, -7vh, 0) scale(1.18);
+  }
+}
+
+.fx-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  z-index: 60;
+  pointer-events: none;
+  background: var(--accent-grad);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+}
+
+/* ---------- 3. Glass surfaces ---------- */
+.site-header {
+  background: hsl(var(--paper) / .58);
+  -webkit-backdrop-filter: blur(20px) saturate(1.65);
+  backdrop-filter: blur(20px) saturate(1.65);
+  border-bottom-color: hsl(var(--line) / .5);
+  transition: background .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.site-header.is-scrolled {
+  background: hsl(var(--paper) / .86);
+  box-shadow: 0 10px 36px hsl(var(--shadow) / .1);
+  border-bottom-color: hsl(var(--line) / .7);
+}
+.header-inner {
+  transition: min-height .35s var(--ease-out);
+}
+.site-header.is-scrolled .header-inner {
+  min-height: 60px;
+}
+
+.brand-mark {
+  background: linear-gradient(135deg, hsl(var(--pine)), hsl(var(--pine-2)));
+  box-shadow: 0 6px 22px hsl(var(--pine) / .38);
+  transition: transform .55s var(--ease-spring), box-shadow .3s ease;
+}
+.brand:hover .brand-mark {
+  transform: rotate(7deg) scale(1.08);
+  box-shadow: 0 8px 28px hsl(var(--pine) / .48);
+}
+
+@media (min-width: 761px) {
+  .primary-nav a,
+  .header-account > a.account-name {
+    position: relative;
+    padding: 6px 0;
+  }
+  .primary-nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-grad);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s var(--ease-out);
+  }
+  .primary-nav a:hover::after,
+  .primary-nav a[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+}
+
+.search-panel,
+.purchase-card,
+.auth-card,
+.profile-card,
+.panel-card,
+.order-card,
+.stat-card,
+.review-card,
+.review-form,
+.audit-feed,
+.table-wrap,
+.empty-state,
+.loading-skeleton {
+  background: hsl(var(--surface) / .78);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  border-color: hsl(var(--line) / .7);
+  box-shadow: var(--shadow-soft), inset 0 1px 0 hsl(var(--hl));
+}
+.search-panel,
+.auth-card,
+.purchase-card,
+.panel-card,
+.profile-card {
+  border-radius: var(--radius-lg);
+}
+
+/* Gradient hairline on hero-ish cards */
+.auth-card,
+.purchase-card {
+  position: relative;
+}
+.auth-card::before,
+.purchase-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(145deg, hsl(var(--pine) / .55), transparent 40%, hsl(var(--coral) / .5));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Car cards: spotlight + 3D tilt */
+.car-card,
+.car-card:hover {
+  position: relative;
+  border-radius: var(--radius-card);
+  background: hsl(var(--surface) / .82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-color: hsl(var(--line) / .75);
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  transition:
+    transform .28s var(--ease-out),
+    box-shadow .4s ease,
+    border-color .35s ease;
+}
+.car-card:hover {
+  --ty: -7px;
+  border-color: hsl(var(--pine) / .5);
+  box-shadow: var(--shadow-lift), inset 0 1px 0 hsl(var(--hl));
+}
+.car-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 40%),
+    hsl(var(--pine) / .12),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.car-card:hover::before,
+.stat-card:hover::before,
+.order-card:hover::before,
+.panel-card:hover::before {
+  opacity: 1;
+}
+.stat-card,
+.order-card,
+.panel-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s var(--ease-out), box-shadow .3s ease;
+}
+.stat-card:hover,
+.order-card:hover {
+  transform: translateY(-3px);
+}
+.stat-card {
+  border-radius: 16px;
+}
+.stat-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-grad);
+  opacity: .9;
+}
+.stat-card strong {
+  font-size: 30px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em;
+}
+
+.car-visual {
+  background: linear-gradient(
+    160deg,
+    hsl(var(--art-bg, 161 22% 87%)),
+    color-mix(in oklab, hsl(var(--art-bg, 161 22% 87%)) 72%, white)
+  );
+}
+.car-visual.has-photo::after {
+  display: block;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, hsl(0 0% 0% / .48), transparent 48%);
+  pointer-events: none;
+}
+.car-card:hover .car-photo {
+  transform: scale(1.07);
+}
+.car-card:hover .car-illustration {
+  transform: translateY(-4px) scale(1.04);
+}
+.car-illustration {
+  transition: transform .6s var(--ease-spring);
+}
+.price {
+  letter-spacing: -.05em;
+}
+.icon-button {
+  background: hsl(var(--surface) / .85);
+  backdrop-filter: blur(8px);
+}
+.icon-button.is-saved svg {
+  animation: heart-pop .55s var(--ease-spring);
+  fill: currentColor;
+}
+@keyframes heart-pop {
+  0% {
+    transform: scale(.4);
+  }
+  55% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.footer {
+  border-top-color: transparent;
+  position: relative;
+}
+.footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--pine) / .45),
+    hsl(var(--coral) / .45),
+    transparent
+  );
+}
+
+/* ---------- 4. Hero ---------- */
+.hero h1 {
+  font-size: clamp(42px, 6.4vw, 80px);
+  line-height: .97;
+  letter-spacing: -.062em;
+}
+.hero h1 em,
+.hero h1 em .w {
+  background-image: linear-gradient(
+    100deg,
+    hsl(var(--coral)),
+    hsl(var(--gold)),
+    hsl(var(--pine)),
+    hsl(var(--coral))
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 8s ease infinite;
+}
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.hero h1 .w {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: word-in .7s var(--ease-out) forwards;
+  animation-delay: calc(var(--wi, 0) * 55ms);
+}
+@keyframes word-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-art {
+  position: relative;
+  transform: translate3d(calc(var(--px, 0) * 12px), calc(var(--py, 0) * 8px), 0);
+  transition: transform .15s ease-out;
+}
+.hero-art::before,
+.hero-art::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid hsl(var(--pine) / .2);
+  pointer-events: none;
+}
+.hero-art::before {
+  inset: 6% 4%;
+  animation: orbit 22s linear infinite;
+}
+.hero-art::after {
+  inset: 14% 12%;
+  border-color: hsl(var(--coral) / .18);
+  animation: orbit 28s linear infinite reverse;
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.hero-car {
+  width: 80%;
+  filter: drop-shadow(0 18px 30px hsl(var(--shadow) / .18));
+}
+.hero-car svg {
+  animation: suspension 3.2s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+@keyframes suspension {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.hero-stamp {
+  right: 15%;
+  top: 13%;
+  bottom: auto;
+  box-shadow: 0 10px 28px hsl(var(--shadow) / .12);
+}
+
+/* ---------- 5. Controls & theme toggle ---------- */
+.button {
+  border-radius: 10px;
+  letter-spacing: -.01em;
+}
+.button-primary {
+  background: linear-gradient(135deg, hsl(var(--pine)), hsl(var(--pine-2)));
+  box-shadow: 0 6px 18px hsl(var(--pine) / .28);
+}
+.button-primary:hover {
+  background: linear-gradient(135deg, hsl(var(--pine-dark)), hsl(var(--pine)));
+  box-shadow: 0 8px 22px hsl(var(--pine) / .36);
+}
+.button-outline {
+  background: hsl(var(--surface) / .5);
+}
+.field input,
+.field select,
+.field textarea {
+  border-radius: 10px;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: hsl(var(--pine) / .55);
+  box-shadow: 0 0 0 3px hsl(var(--pine) / .15);
+}
+
+/* Theme toggle — clear sun ↔ moon */
+.theme-toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+  z-index: 2;
+}
+.theme-toggle svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  transition:
+    transform .65s var(--ease-spring),
+    opacity .3s ease;
+}
+.theme-toggle .i-sun {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+.theme-toggle .i-moon {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg) scale(0.4);
+}
+:root[data-theme="dark"] .theme-toggle .i-sun {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scale(0.4);
+}
+:root[data-theme="dark"] .theme-toggle .i-moon {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+.theme-toggle:hover {
+  color: hsl(var(--gold));
+  border-color: hsl(var(--gold) / .7);
+  background: hsl(var(--gold) / .1);
+}
+.theme-toggle:active {
+  transform: scale(0.94);
+}
+
+/* Circular theme-switch reveal (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* ---------- 6. Motion utilities ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity .55s var(--ease-out),
+    transform .55s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+.fx-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: hsl(0 0% 100% / .28);
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple .55s ease-out forwards;
+}
+@keyframes ripple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ---------- Responsive + accessibility ---------- */
+@media (max-width: 760px) {
+  .fx-bg i {
+    filter: blur(60px);
+  }
+  .fx-bg::after {
+    display: none;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 12vw, 56px);
+  }
+  .car-card,
+  .car-card:hover {
+    transform: none;
+  }
+  .car-card:hover {
+    transform: translateY(-3px);
+  }
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+  }
+}
+@media (hover: none) {
+  .car-card::before {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-bg i,
+  .hero-art,
+  .hero-art::before,
+  .hero-art::after,
+  .hero-car,
+  .hero-car svg,
+  .hero-car::after,
+  .hero-stamp,
+  .hero h1 em,
+  .hero h1 .w {
+    animation: none !important;
+  }
+  .fx-progress {
+    display: none;
+  }
+}
+@media print {
+  .fx-bg,
+  .fx-progress {
+    display: none;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+  }
+}
+
+/* ---------- Layout polish ---------- */
+.header-account .button-primary,
+.header-account .button-primary:hover {
+  color: hsl(var(--surface));
+}
+.header-account .button-outline:hover {
+  color: hsl(var(--pine));
+}
+.car-visual .car-illustration {
+  max-width: 235px;
+}
+.detail-art .car-illustration {
+  max-width: 470px;
+}
+.seller-byline .seller-avatar {
+  display: grid;
+  place-items: center;
+}
+
+:root[data-theme="dark"] .car-visual,
+:root[data-theme="dark"] .detail-art {
+  background: radial-gradient(
+    circle at 50% 60%,
+    color-mix(in oklab, hsl(var(--art-bg, 161 22% 87%)) 20%, hsl(var(--surface))),
+    hsl(var(--surface)) 75%
+  );
+}
+
+.header-account .button {
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .brand small {
+    display: none;
+  }
+  .header-account {
+    gap: 7px;
+  }
+  .hero-stamp {
+    right: 10%;
+    top: 12%;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* Extra dark-mode surface polish */
+:root[data-theme="dark"] .site-header {
+  background: hsl(var(--paper) / .72);
+}
+:root[data-theme="dark"] .site-header.is-scrolled {
+  background: hsl(var(--paper) / .9);
+}
+:root[data-theme="dark"] .button-outline {
+  background: hsl(var(--surface) / .4);
+}
+:root[data-theme="dark"] .icon-button {
+  background: hsl(var(--surface) / .7);
+  border-color: hsl(var(--line) / .85);
+}
+:root[data-theme="dark"] .car-card {
+  background: hsl(var(--surface) / .88);
+}
+:root[data-theme="dark"] .search-panel,
+:root[data-theme="dark"] .profile-card,
+:root[data-theme="dark"] .panel-card,
+:root[data-theme="dark"] .auth-card,
+:root[data-theme="dark"] .purchase-card,
+:root[data-theme="dark"] .order-card,
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .review-card,
+:root[data-theme="dark"] .table-wrap {
+  background: hsl(var(--surface) / .86);
+  box-shadow: 0 16px 48px hsl(0 0% 0% / .35), inset 0 1px 0 hsl(var(--hl));
+}
+
+/* Status pills & tags */
+.status-pill,
+.tag {
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+.tag-warm {
+  background: hsl(var(--coral) / .12);
+}
+:root[data-theme="dark"] .tag-warm {
+  background: hsl(var(--coral) / .18);
+}
+
+/* Toast polish */
+.toast {
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px hsl(var(--shadow) / .18);
+}

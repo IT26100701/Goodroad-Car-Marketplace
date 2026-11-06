@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2e9">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A straightforward, reassuring place to buy and sell well-described used cars.">
+  <title>Goodroad — cars, described honestly</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Pick the theme before first paint so there is no light/dark flash. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("goodroad-theme");
+        if (t !== "light" && t !== "dark") {
+          t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+        document.documentElement.style.colorScheme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute("content", t === "dark" ? "#071015" : "#f5f2e9");
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/app.css">
+  <link rel="stylesheet" href="/theme.css">
+  <script src="/app.js" defer></script>
+  <script src="/fx.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div id="app">
+    <header class="site-header" id="site-header"></header>
+    <main id="main-content" tabindex="-1"></main>
+    <footer class="footer" id="site-footer"></footer>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="false"></div>
+  </div>
+</body>
+</html>
