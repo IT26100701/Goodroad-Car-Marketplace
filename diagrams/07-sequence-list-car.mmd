@@ -1,0 +1,23 @@
+%%{init: {'theme': 'base'}}%%
+sequenceDiagram
+    autonumber
+    actor Seller
+    participant UI as Web UI
+    participant CarCtrl as CarController
+    participant CarSvc as CarService
+    participant CarRepo as CarRepository
+    participant Store as JsonFileStore
+    participant Audit as AuditService
+
+    Seller->>UI: Fill listing form (brand, model, year, price...)
+    UI->>CarCtrl: POST /api/cars {listing data} (+ CSRF)
+    CarCtrl->>CarSvc: createCar(sellerId, data)
+
+    CarSvc->>CarSvc: validate fields & set status = ACTIVE
+    CarSvc->>CarRepo: save(new Car)
+    CarRepo->>Store: write cars.json
+    Store-->>CarRepo: ok
+    CarSvc->>Audit: log("CAR_CREATED", ...)
+    CarSvc-->>CarCtrl: Car
+    CarCtrl-->>UI: 201 Created
+    UI-->>Seller: "Listing published"
