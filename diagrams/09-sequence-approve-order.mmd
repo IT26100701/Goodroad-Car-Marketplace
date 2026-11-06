@@ -1,0 +1,47 @@
+%%{init: {'theme': 'base'}}%%
+sequenceDiagram
+    autonumber
+    actor Seller
+    participant UI as Web UI
+    participant OrderCtrl as OrderController
+    participant OrderSvc as OrderService
+    participant CarSvc as CarService
+    participant OrderRepo as PurchaseOrderRepository
+    participant CarRepo as CarRepository
+    participant Store as JsonFileStore
+    participant Audit as AuditService
+
+    Seller->>UI: Choose "Approve" on a pending order
+    UI->>OrderCtrl: PATCH /api/orders/{id}/status {status: APPROVED}
+    OrderCtrl->>OrderSvc: updateStatus(orderId, sellerId, APPROVED)
+
+    OrderSvc->>OrderRepo: findById(orderId)
+    OrderRepo->>Store: read orders.json
+    Store-->>OrderRepo: PurchaseOrder
+    OrderRepo-->>OrderSvc: Order (PENDING, correct seller)
+
+    alt Valid transition
+        OrderSvc->>OrderRepo: save(status = APPROVED)
+        OrderRepo->>Store: write orders.json
+        OrderSvc->>Audit: log("ORDER_APPROVED", ...)
+        OrderSvc-->>OrderCtrl: updated Order
+        OrderCtrl-->>UI: 200 OK
+        UI-->>Seller: "Order approved"
+
+        Note over Seller,UI: Later the seller can mark it COMPLETED
+        Seller->>UI: Choose "Complete"
+        UI->>OrderCtrl: PATCH ... {status: COMPLETED}
+        OrderCtrl->>OrderSvc: updateStatus(..., COMPLETED)
+        OrderSvc->>CarSvc: markSold(carId)
+        CarSvc->>CarRepo: save(status = SOLD)
+        CarRepo->>Store: write cars.json
+        OrderSvc->>OrderRepo: cancel other open orders for same car
+        OrderSvc->>Audit: log("ORDER_COMPLETED", ...)
+        OrderSvc-->>OrderCtrl: Order (COMPLETED)
+        OrderCtrl-->>UI: 200 OK
+        UI-->>Seller: "Sale completed – car marked sold"
+    else Invalid
+        OrderSvc-->>OrderCtrl: error
+        OrderCtrl-->>UI: 400 / 403
+        UI-->>Seller: Show error
+    end

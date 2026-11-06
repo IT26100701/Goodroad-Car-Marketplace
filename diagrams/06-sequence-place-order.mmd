@@ -1,0 +1,37 @@
+%%{init: {'theme': 'base'}}%%
+sequenceDiagram
+    autonumber
+    actor Buyer
+    participant UI as Web UI
+    participant OrderCtrl as OrderController
+    participant OrderSvc as OrderService
+    participant CarSvc as CarService
+    participant OrderRepo as PurchaseOrderRepository
+    participant CarRepo as CarRepository
+    participant Store as JsonFileStore
+    participant Audit as AuditService
+
+    Buyer->>UI: Click "Request Purchase" on a car
+    UI->>OrderCtrl: POST /api/orders {carId} (+ CSRF)
+    OrderCtrl->>OrderSvc: createOrder(buyerId, carId)
+
+    OrderSvc->>CarSvc: getCar(carId)
+    CarSvc->>CarRepo: findById(carId)
+    CarRepo->>Store: read cars.json
+    Store-->>CarRepo: Car
+    CarRepo-->>CarSvc: Car
+    CarSvc-->>OrderSvc: Car (must be ACTIVE)
+
+    alt Car is ACTIVE and belongs to another seller
+        OrderSvc->>OrderRepo: save(new PurchaseOrder)
+        OrderRepo->>Store: write orders.json
+        Store-->>OrderRepo: ok
+        OrderSvc->>Audit: log("ORDER_CREATED", ...)
+        OrderSvc-->>OrderCtrl: PurchaseOrder (PENDING)
+        OrderCtrl-->>UI: 201 Created
+        UI-->>Buyer: "Order placed – waiting for seller"
+    else Car not available
+        OrderSvc-->>OrderCtrl: error
+        OrderCtrl-->>UI: 400 / 409
+        UI-->>Buyer: Show error
+    end
