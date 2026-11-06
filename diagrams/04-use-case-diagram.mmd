@@ -1,0 +1,79 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f4fd', 'primaryBorderColor': '#2c5aa0'}}}%%
+flowchart LR
+    %% Mermaid does not have native UML use-case syntax in all renderers,
+    %% so this uses a clear actor → use-case style that works everywhere.
+
+    subgraph Actors
+        Guest((Guest))
+        Buyer((Buyer))
+        Seller((Seller))
+        Admin((Admin))
+    end
+
+    subgraph Authentication
+        UC1[Register Account]
+        UC2[Login]
+        UC3[Logout]
+        UC4[Update Own Profile]
+    end
+
+    subgraph Buyer_Features
+        UC5[Search / Browse Cars]
+        UC6[View Car Details]
+        UC7[Add / Remove Wishlist]
+        UC8[Place Purchase Order]
+        UC9[View Own Orders]
+        UC10[Cancel Pending Order]
+        UC11[Write Review]
+        UC12[Edit / Delete Own Review]
+    end
+
+    subgraph Seller_Features
+        UC13[Create Car Listing]
+        UC14[Update / Remove Own Listing]
+        UC15[View Orders for Own Cars]
+        UC16[Approve / Complete / Cancel Order]
+    end
+
+    subgraph Admin_Features
+        UC17[View Marketplace Overview]
+        UC18[Manage User Accounts]
+        UC19[Create Additional Admin]
+        UC20[Hide / Republish Reviews]
+        UC21[View Audit Log]
+    end
+
+    Guest --> UC1
+    Guest --> UC2
+    Guest --> UC5
+    Guest --> UC6
+
+    Buyer --> UC2
+    Buyer --> UC3
+    Buyer --> UC4
+    Buyer --> UC5
+    Buyer --> UC6
+    Buyer --> UC7
+    Buyer --> UC8
+    Buyer --> UC9
+    Buyer --> UC10
+    Buyer --> UC11
+    Buyer --> UC12
+
+    Seller --> UC2
+    Seller --> UC3
+    Seller --> UC4
+    Seller --> UC5
+    Seller --> UC6
+    Seller --> UC13
+    Seller --> UC14
+    Seller --> UC15
+    Seller --> UC16
+
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC17
+    Admin --> UC18
+    Admin --> UC19
+    Admin --> UC20
+    Admin --> UC21

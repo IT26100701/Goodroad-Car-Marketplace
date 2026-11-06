@@ -1,0 +1,142 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'primaryBorderColor': '#2c5aa0', 'lineColor': '#555', 'fontSize': '14px'}}}%%
+classDiagram
+    direction TB
+
+    class Account {
+        <<abstract>>
+        -String id
+        -String email
+        -String passwordHash
+        -String fullName
+        -String phone
+        -boolean active
+        -Instant createdAt
+        +getRole() AccountRole*
+    }
+
+    class BuyerAccount {
+        +getRole() AccountRole
+    }
+
+    class SellerAccount {
+        +getRole() AccountRole
+    }
+
+    class AdminAccount {
+        +getRole() AccountRole
+    }
+
+    class AccountRole {
+        <<enumeration>>
+        BUYER
+        SELLER
+        ADMIN
+    }
+
+    class Car {
+        -String id
+        -String sellerId
+        -String brand
+        -String model
+        -VehicleType vehicleType
+        -int year
+        -long mileage
+        -BigDecimal price
+        -String description
+        -CarStatus status
+        -Instant createdAt
+        -Instant updatedAt
+    }
+
+    class VehicleType {
+        <<enumeration>>
+        SEDAN
+        SUV
+        TRUCK
+        HATCHBACK
+        VAN
+        OTHER
+    }
+
+    class CarStatus {
+        <<enumeration>>
+        ACTIVE
+        SOLD
+        REMOVED
+    }
+
+    class PurchaseOrder {
+        -String id
+        -String buyerId
+        -String sellerId
+        -String carId
+        -BigDecimal amount
+        -OrderStatus status
+        -Instant createdAt
+        -Instant updatedAt
+    }
+
+    class OrderStatus {
+        <<enumeration>>
+        PENDING
+        APPROVED
+        COMPLETED
+        CANCELLED
+    }
+
+    class WishlistEntry {
+        -String id
+        -String buyerId
+        -String carId
+        -Instant createdAt
+    }
+
+    class Review {
+        -String id
+        -String buyerId
+        -String carId
+        -int rating
+        -String comment
+        -ReviewStatus status
+        -Instant createdAt
+        -Instant updatedAt
+    }
+
+    class ReviewStatus {
+        <<enumeration>>
+        PUBLISHED
+        HIDDEN
+    }
+
+    class AuditEvent {
+        -String id
+        -String actorId
+        -String action
+        -String targetType
+        -String targetId
+        -String details
+        -Instant createdAt
+    }
+
+    %% Inheritance
+    Account <|-- BuyerAccount
+    Account <|-- SellerAccount
+    Account <|-- AdminAccount
+
+    %% Associations (by reference ID)
+    SellerAccount "1" --> "*" Car : sellerId
+    BuyerAccount "1" --> "*" PurchaseOrder : buyerId
+    SellerAccount "1" --> "*" PurchaseOrder : sellerId
+    Car "1" --> "*" PurchaseOrder : carId
+    BuyerAccount "1" --> "*" WishlistEntry : buyerId
+    Car "1" --> "*" WishlistEntry : carId
+    BuyerAccount "1" --> "*" Review : buyerId
+    Car "1" --> "*" Review : carId
+    Account "1" --> "*" AuditEvent : actorId
+
+    %% Enum usage
+    Account ..> AccountRole : uses
+    Car ..> VehicleType : uses
+    Car ..> CarStatus : uses
+    PurchaseOrder ..> OrderStatus : uses
+    Review ..> ReviewStatus : uses

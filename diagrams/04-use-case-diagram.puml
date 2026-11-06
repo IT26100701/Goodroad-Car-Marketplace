@@ -1,0 +1,91 @@
+@startuml Goodroad_Use_Case_Diagram
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor #E8F4FD
+    BorderColor #2C5AA0
+}
+title Goodroad Car Marketplace — Use Case Diagram
+
+actor Guest
+actor Buyer
+actor Seller
+actor Admin
+
+rectangle "Goodroad Car Marketplace" {
+    ' Authentication
+    usecase "Register Account" as UC1
+    usecase "Login" as UC2
+    usecase "Logout" as UC3
+    usecase "Update Own Profile" as UC4
+
+    ' Buyer
+    usecase "Search / Browse Cars" as UC5
+    usecase "View Car Details" as UC6
+    usecase "Add / Remove from Wishlist" as UC7
+    usecase "Place Purchase Order" as UC8
+    usecase "View Own Orders" as UC9
+    usecase "Cancel Pending Order" as UC10
+    usecase "Write Review" as UC11
+    usecase "Edit / Delete Own Review" as UC12
+
+    ' Seller
+    usecase "Create Car Listing" as UC13
+    usecase "Update / Remove Own Listing" as UC14
+    usecase "View Orders for Own Cars" as UC15
+    usecase "Approve / Complete / Cancel Order" as UC16
+
+    ' Admin
+    usecase "View Marketplace Overview" as UC17
+    usecase "Manage User Accounts" as UC18
+    usecase "Create Additional Admin" as UC19
+    usecase "Hide / Republish Reviews" as UC20
+    usecase "View Audit Log" as UC21
+}
+
+' Guest
+Guest --> UC1
+Guest --> UC2
+Guest --> UC5
+Guest --> UC6
+
+' Buyer
+Buyer --> UC2
+Buyer --> UC3
+Buyer --> UC4
+Buyer --> UC5
+Buyer --> UC6
+Buyer --> UC7
+Buyer --> UC8
+Buyer --> UC9
+Buyer --> UC10
+Buyer --> UC11
+Buyer --> UC12
+
+' Seller
+Seller --> UC2
+Seller --> UC3
+Seller --> UC4
+Seller --> UC5
+Seller --> UC6
+Seller --> UC13
+Seller --> UC14
+Seller --> UC15
+Seller --> UC16
+
+' Admin
+Admin --> UC2
+Admin --> UC3
+Admin --> UC17
+Admin --> UC18
+Admin --> UC19
+Admin --> UC20
+Admin --> UC21
+
+' Generalisation (optional)
+Buyer --|> Guest
+Seller --|> Guest
+Admin --|> Guest
+
+@enduml

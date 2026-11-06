@@ -1,0 +1,29 @@
+[
+  {
+    "id": "au100000-0000-4000-8000-000000000001",
+    "actorId": "a1000000-0000-4000-8000-000000000001",
+    "action": "ACCOUNT_CREATED",
+    "targetType": "account",
+    "targetId": "a1000000-0000-4000-8000-000000000001",
+    "details": "Bootstrap administrator account created",
+    "createdAt": "2026-09-15T10:00:00.000Z"
+  },
+  {
+    "id": "au100000-0000-4000-8000-000000000002",
+    "actorId": "s1000000-0000-4000-8000-000000000001",
+    "action": "CAR_LISTED",
+    "targetType": "car",
+    "targetId": "c1000000-0000-4000-8000-000000000001",
+    "details": "Listed Toyota Aqua 2018",
+    "createdAt": "2026-09-25T10:00:00.000Z"
+  },
+  {
+    "id": "au100000-0000-4000-8000-000000000003",
+    "actorId": "b1000000-0000-4000-8000-000000000001",
+    "action": "ORDER_COMPLETED",
+    "targetType": "order",
+    "targetId": "o1000000-0000-4000-8000-000000000001",
+    "details": "Purchase of Toyota Axio completed",
+    "createdAt": "2026-10-10T10:00:00.000Z"
+  }
+]

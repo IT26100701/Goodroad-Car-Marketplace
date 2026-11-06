@@ -1,0 +1,154 @@
+@startuml Goodroad_Domain_Class_Diagram
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor #E8F4FD
+    BorderColor #2C5AA0
+    ArrowColor #444444
+    FontName Arial
+}
+skinparam enum {
+    BackgroundColor #FFF8E7
+    BorderColor #C9A227
+}
+skinparam abstract {
+    BackgroundColor #F0F0F0
+    BorderColor #555555
+}
+skinparam packageStyle rectangle
+title Goodroad Car Marketplace — Domain Class Diagram
+
+abstract class Account {
+  - id : String
+  - email : String
+  - passwordHash : String
+  - fullName : String
+  - phone : String
+  - active : boolean
+  - createdAt : Instant
+  {abstract} + getRole() : AccountRole
+}
+
+class BuyerAccount {
+  + getRole() : AccountRole
+}
+
+class SellerAccount {
+  + getRole() : AccountRole
+}
+
+class AdminAccount {
+  + getRole() : AccountRole
+}
+
+enum AccountRole {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+class Car {
+  - id : String
+  - sellerId : String
+  - brand : String
+  - model : String
+  - vehicleType : VehicleType
+  - year : int
+  - mileage : long
+  - price : BigDecimal
+  - description : String
+  - status : CarStatus
+  - createdAt : Instant
+  - updatedAt : Instant
+}
+
+enum VehicleType {
+  SEDAN
+  SUV
+  TRUCK
+  HATCHBACK
+  VAN
+  OTHER
+}
+
+enum CarStatus {
+  ACTIVE
+  SOLD
+  REMOVED
+}
+
+class PurchaseOrder {
+  - id : String
+  - buyerId : String
+  - sellerId : String
+  - carId : String
+  - amount : BigDecimal
+  - status : OrderStatus
+  - createdAt : Instant
+  - updatedAt : Instant
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  COMPLETED
+  CANCELLED
+}
+
+class WishlistEntry {
+  - id : String
+  - buyerId : String
+  - carId : String
+  - createdAt : Instant
+}
+
+class Review {
+  - id : String
+  - buyerId : String
+  - carId : String
+  - rating : int
+  - comment : String
+  - status : ReviewStatus
+  - createdAt : Instant
+  - updatedAt : Instant
+}
+
+enum ReviewStatus {
+  PUBLISHED
+  HIDDEN
+}
+
+class AuditEvent {
+  - id : String
+  - actorId : String
+  - action : String
+  - targetType : String
+  - targetId : String
+  - details : String
+  - createdAt : Instant
+}
+
+' Inheritance
+Account <|-- BuyerAccount
+Account <|-- SellerAccount
+Account <|-- AdminAccount
+
+' Associations (ID-based references)
+SellerAccount "1" --> "*" Car : sellerId
+BuyerAccount "1" --> "*" PurchaseOrder : buyerId
+SellerAccount "1" --> "*" PurchaseOrder : sellerId
+Car "1" --> "*" PurchaseOrder : carId
+BuyerAccount "1" --> "*" WishlistEntry : buyerId
+Car "1" --> "*" WishlistEntry : carId
+BuyerAccount "1" --> "*" Review : buyerId
+Car "1" --> "*" Review : carId
+Account "1" --> "*" AuditEvent : actorId
+
+' Enum dependencies
+Account ..> AccountRole
+Car ..> VehicleType
+Car ..> CarStatus
+PurchaseOrder ..> OrderStatus
+Review ..> ReviewStatus
+
+@enduml

@@ -1,0 +1,45 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'primaryBorderColor': '#2c5aa0', 'lineColor': '#444'}}}%%
+classDiagram
+    direction LR
+
+    class Account {
+        <<abstract>>
+        id, email, fullName...
+        +getRole()
+    }
+
+    class BuyerAccount
+    class SellerAccount
+    class AdminAccount
+
+    class Car {
+        brand, model, year
+        price, mileage, status
+    }
+
+    class PurchaseOrder {
+        amount, status
+    }
+
+    class WishlistEntry
+    class Review {
+        rating, comment, status
+    }
+
+    class AuditEvent {
+        action, targetType
+    }
+
+    Account <|-- BuyerAccount
+    Account <|-- SellerAccount
+    Account <|-- AdminAccount
+
+    SellerAccount "1" --> "*" Car : lists
+    BuyerAccount "1" --> "*" PurchaseOrder : places
+    SellerAccount "1" --> "*" PurchaseOrder : receives
+    Car "1" --> "*" PurchaseOrder : ordered as
+    BuyerAccount "1" --> "*" WishlistEntry : saves
+    Car "1" --> "*" WishlistEntry : saved in
+    BuyerAccount "1" --> "*" Review : writes
+    Car "1" --> "*" Review : receives
+    Account "1" --> "*" AuditEvent : performs
