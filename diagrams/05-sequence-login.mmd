@@ -1,0 +1,28 @@
+%%{init: {'theme': 'base'}}%%
+sequenceDiagram
+    autonumber
+    actor User as Buyer / Seller / Admin
+    participant UI as Web UI
+    participant Auth as AuthController
+    participant Svc as AccountService
+    participant Repo as AccountRepository
+    participant Store as JsonFileStore
+
+    User->>UI: Enter email + password
+    UI->>Auth: GET /api/auth/csrf
+    Auth-->>UI: CSRF token + cookie
+    UI->>Auth: POST /api/auth/login (email, password, CSRF)
+    Auth->>Svc: authenticate(email, password)
+    Svc->>Repo: findByEmail(email)
+    Repo->>Store: read users.json
+    Store-->>Repo: account list
+    Repo-->>Svc: Account (or empty)
+    alt Valid credentials and active
+        Svc-->>Auth: AccountPrincipal
+        Auth-->>UI: 200 OK + session cookie
+        UI-->>User: Redirect to dashboard
+    else Invalid credentials or inactive
+        Svc-->>Auth: error
+        Auth-->>UI: 401 Unauthorized
+        UI-->>User: Show error message
+    end
