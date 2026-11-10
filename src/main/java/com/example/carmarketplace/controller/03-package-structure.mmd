@@ -1,0 +1,77 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#f5f5f5', 'primaryBorderColor': '#333'}}}%%
+classDiagram
+    direction TB
+
+    package "com.example.carmarketplace" {
+        class CarMarketplaceApplication
+    }
+
+    package "domain" {
+        class Account
+        class Car
+        class PurchaseOrder
+        class WishlistEntry
+        class Review
+        class AuditEvent
+        class "Enums*"
+    }
+
+    package "repository" {
+        class AccountRepository
+        class CarRepository
+        class PurchaseOrderRepository
+        class WishlistRepository
+        class ReviewRepository
+        class AuditRepository
+        class JsonListRepository
+    }
+
+    package "service" {
+        class AccountService
+        class CarService
+        class OrderService
+        class WishlistService
+        class ReviewService
+        class AdminService
+        class AuditService
+    }
+
+    package "controller" {
+        class AuthController
+        class UserController
+        class CarController
+        class OrderController
+        class WishlistController
+        class ReviewController
+        class AdminController
+        class HealthController
+    }
+
+    package "api" {
+        class ApiRequests
+        class ApiResponses
+        class ApiError
+        class GlobalExceptionHandler
+    }
+
+    package "config" {
+        class SecurityConfiguration
+        class PasswordConfiguration
+    }
+
+    package "security" {
+        class AccountPrincipal
+        class ActiveAccountFilter
+    }
+
+    package "storage" {
+        class JsonFileStore
+    }
+
+    controller --> service : uses
+    service --> repository : uses
+    repository --> domain : manages
+    repository --> storage : persists via
+    controller --> api : DTOs
+    config --> security
+    service --> domain
