@@ -46,7 +46,8 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/", "/index.html", "/app.css", "/app.js", "/favicon.svg").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/index.html", "/app.css", "/app.js",
+                                "/theme.css", "/fx.js", "/favicon.svg").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/health", "/api/auth/csrf",
                                 "/api/cars", "/api/cars/**", "/api/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login",
