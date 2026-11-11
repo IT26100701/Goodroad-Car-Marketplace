@@ -5,7 +5,7 @@
    1. Theme tokens      (light = default, dark = [data-theme="dark"])
    2. Ambient layers    (aurora, grid, scroll progress)
    3. Glass surfaces    (header, panels, cards)
-   4. Hero              (animated headline, orbit, driving car)
+   4. Hero              (animated headline and car illustration)
    5. Controls          (buttons, inputs, theme toggle)
    6. Motion utilities  (reveal, ripple, toast, view transition)
    ===================================================================== */
@@ -438,7 +438,6 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient-shift 8s ease infinite;
 }
 @keyframes gradient-shift {
   0%,
@@ -464,53 +463,14 @@ body {
 }
 .hero-art {
   position: relative;
-  transform: translate3d(calc(var(--px, 0) * 12px), calc(var(--py, 0) * 8px), 0);
+  transform: translate3d(calc(var(--px, 0) * 4px), calc(var(--py, 0) * 3px), 0);
   transition: transform .15s ease-out;
 }
-.hero-art::before,
-.hero-art::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid hsl(var(--pine) / .2);
-  pointer-events: none;
-}
-.hero-art::before {
-  inset: 6% 4%;
-  animation: orbit 22s linear infinite;
-}
-.hero-art::after {
-  inset: 14% 12%;
-  border-color: hsl(var(--coral) / .18);
-  animation: orbit 28s linear infinite reverse;
-}
-@keyframes orbit {
-  to {
-    transform: rotate(360deg);
-  }
-}
 .hero-car {
-  width: 80%;
-  filter: drop-shadow(0 18px 30px hsl(var(--shadow) / .18));
+  width: 100%;
 }
 .hero-car svg {
-  animation: suspension 3.2s ease-in-out infinite;
-  transform-origin: 50% 90%;
-}
-@keyframes suspension {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-.hero-stamp {
-  right: 15%;
-  top: 13%;
-  bottom: auto;
-  box-shadow: 0 10px 28px hsl(var(--shadow) / .12);
+  animation: none;
 }
 
 /* ---------- 5. Controls & theme toggle ---------- */
@@ -661,12 +621,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .fx-bg i,
   .hero-art,
-  .hero-art::before,
-  .hero-art::after,
   .hero-car,
   .hero-car svg,
-  .hero-car::after,
-  .hero-stamp,
   .hero h1 em,
   .hero h1 .w {
     animation: none !important;
@@ -722,12 +678,6 @@ body {
   }
   .header-account {
     gap: 7px;
-  }
-  .hero-stamp {
-    right: 10%;
-    top: 12%;
-    width: 64px;
-    height: 64px;
   }
 }
 

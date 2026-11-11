@@ -152,7 +152,7 @@
   /* ---------------- Scroll reveal ---------------- */
   const REVEAL =
     ".car-card,.stat-card,.review-card,.order-card,.panel-card,.profile-card,.section-heading,.inventory-head," +
-    ".search-panel,.detail-facts,.table-wrap,.audit-feed,.empty-state,.auth-card,.auth-story,.purchase-card," +
+    ".detail-facts,.table-wrap,.audit-feed,.empty-state,.auth-card,.auth-story,.purchase-card," +
     ".gallery,.detail-art,.page-title-row,.review-form";
   const canObserve = "IntersectionObserver" in window;
   if (canObserve && !reduced()) root.classList.add("fx-on");

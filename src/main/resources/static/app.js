@@ -139,6 +139,25 @@
     </svg>`;
   }
 
+  function heroCarIllustration() {
+    return `<svg viewBox="0 0 760 420" fill="none" aria-hidden="true" focusable="false">
+      <circle class="hero-sun" cx="581" cy="124" r="73"/>
+      <path class="hero-horizon" d="M0 287c112-27 203-39 319-31 116 9 202-7 441-57"/>
+      <ellipse class="hero-ground-shadow" cx="383" cy="356" rx="283" ry="17"/>
+      <path class="hero-road" d="M0 370h760M48 396h117m86 0h156m88 0h117"/>
+      <path class="hero-car-body" d="M92 274c9-12 29-20 57-23l65-7 49-75c11-17 29-27 51-28l141-2c26 0 45 10 60 30l61 75 68 9c29 4 46 17 52 38l7 29c3 14-7 25-21 25H102c-15 0-25-11-23-25l4-29c1-7 4-12 9-17Z"/>
+      <path class="hero-car-roof" d="m226 240 41-65c11-17 26-25 47-26l140-2c22 0 40 9 53 26l54 68"/>
+      <path class="hero-window" d="m260 237 31-56c5-9 14-14 25-14h73v70H260Zm146-70h46c15 0 27 6 36 18l39 52H406v-70Z"/>
+      <path class="hero-window-glint" d="m303 179-18 34m137-32h49"/>
+      <path class="hero-car-detail" d="M397 241v80m-166-78-41 5m380-2 51 7M104 285h568M296 250h34m123 0h35"/>
+      <path class="hero-car-sill" d="M134 320h514"/>
+      <path class="hero-tail-light" d="M88 282h32c7 0 11 4 11 10v7H82l2-13c1-3 2-4 4-4Z"/>
+      <path class="hero-head-light" d="M660 273c16 3 27 10 32 20l3 7h-44c-5 0-8-4-7-8l3-10c2-7 6-10 13-9Z"/>
+      <g class="hero-wheel" transform="translate(208 331)"><circle class="hero-tire" r="46"/><circle class="hero-rim" r="32"/><circle class="hero-wheel-inner" r="22"/><path d="M0-20v40M-20 0h40M-14-14l28 28M14-14l-28 28"/><circle class="hero-hub" r="7"/></g>
+      <g class="hero-wheel" transform="translate(565 331)"><circle class="hero-tire" r="46"/><circle class="hero-rim" r="32"/><circle class="hero-wheel-inner" r="22"/><path d="M0-20v40M-20 0h40M-14-14l28 28M14-14l-28 28"/><circle class="hero-hub" r="7"/></g>
+    </svg>`;
+  }
+
   // A wheel with spokes so it visibly spins when theme.css animates .wheel.
   function wheel(cx) {
     const rim = "hsl(39 40% 90%)";
@@ -350,11 +369,12 @@
   function renderBrowseForm() {
     const f = state.filters;
     return `<form class="search-panel" id="browse-form" data-form="browse" aria-label="Search available cars">
+      <div class="search-intro"><div><span class="eyebrow">Start your search</span><h2>Find a car that fits.</h2></div><p>Choose what matters most, then explore the details.</p></div>
       <div class="search-row">
         <div class="field search-query"><label for="filter-q">What are you looking for?</label><input class="input" id="filter-q" name="q" type="search" placeholder="e.g. Toyota Aqua, hybrid, 2019" value="${escapeHTML(f.q)}"></div>
         <div class="field"><label for="filter-min-price">Price from (Rs.)</label><input class="input" id="filter-min-price" name="minPrice" type="number" min="0" step="100" placeholder="Any" value="${escapeHTML(f.minPrice)}"></div>
         <div class="field"><label for="filter-max-price">Price to (Rs.)</label><input class="input" id="filter-max-price" name="maxPrice" type="number" min="0" step="100" placeholder="Any" value="${escapeHTML(f.maxPrice)}"></div>
-        <div class="field"><label for="filter-sort">Sort by</label><select class="select" id="filter-sort" name="sort">
+        <div class="field search-sort"><label for="filter-sort">Sort by</label><select class="select" id="filter-sort" name="sort">
           ${[["newest","Recently listed"],["price_asc","Price: low to high"],["price_desc","Price: high to low"],["year_desc","Newest model year"],["mileage_asc","Lowest mileage"]].map(([v,l]) => `<option value="${v}" ${f.sort === v ? "selected" : ""}>${l}</option>`).join("")}
         </select></div>
         <button class="button button-primary search-submit" type="submit">${icon.search} Find a car</button>
@@ -376,17 +396,17 @@
     renderHeader("browse");
     appMain.innerHTML = `<div class="container page">
       <section class="hero" aria-labelledby="browse-title">
-        <div class="hero-copy"><span class="eyebrow">A better way to find your next car</span>
+        <div class="hero-copy"><span class="eyebrow">The road starts here</span>
           <h1 id="browse-title">Good cars.<br><em>Clear stories.</em></h1>
-          <p class="lede">Thoughtful listings from real independent sellers. Get the details you need, ask the right questions, and take the next step with confidence.</p>
-          <div class="hero-actions"><a class="button button-primary" href="#browse" data-action="scroll-inventory">Explore the inventory ${icon.arrow}</a>${state.user?.role === "SELLER" ? `<a class="button button-outline" href="${routeHref("sell")}">Manage your cars</a>` : ""}</div>
-          <div class="hero-note">${icon.shield}<span>Well-described cars, direct from the people selling them.</span></div>
+          <p class="lede">Browse cars from independent sellers, compare the details, and find one worth the drive.</p>
+          <div class="hero-actions"><a class="button button-primary" href="#browse" data-action="scroll-inventory">Browse cars ${icon.arrow}</a>${state.user?.role === "SELLER" ? `<a class="button button-outline" href="${routeHref("sell")}">Manage your cars</a>` : ""}</div>
+          <div class="hero-points"><span>${icon.search} Search the details</span><span>${icon.shield} Connect with sellers</span></div>
         </div>
-        <div class="hero-art" aria-hidden="true"><div class="hero-car">${carIllustration("SEDAN")}</div><div class="hero-stamp"><span><strong>GOOD</strong>ROAD<br>MARKET</span></div></div>
+        <div class="hero-art" aria-hidden="true"><div class="hero-art-label">A clearer path to your next car <span>↗</span></div><div class="hero-car">${heroCarIllustration()}</div></div>
       </section>
       ${renderBrowseForm()}
       <section id="inventory" aria-labelledby="inventory-title">
-        <div class="inventory-head"><div><span class="eyebrow">The current line-up</span><h2 id="inventory-title" style="margin:7px 0 0">Cars worth a closer look</h2></div><span class="inventory-count" id="inventory-count">Finding the right cars…</span></div>
+        <div class="inventory-head"><div><span class="eyebrow">Explore the marketplace</span><h2 id="inventory-title" style="margin:7px 0 0">Cars worth a closer look</h2></div><span class="inventory-count" id="inventory-count">Finding the right cars…</span></div>
         <div id="browse-results"><div class="car-grid">${Array.from({length: 6}, () => `<div class="skeleton-card" aria-hidden="true"><div class="skeleton-art skeleton-block"></div><div class="skeleton-lines"><div class="skeleton-line skeleton-block"></div><div class="skeleton-line short skeleton-block"></div><div class="skeleton-line skeleton-block"></div></div></div>`).join("")}</div></div>
       </section>
     </div>`;
